@@ -1,0 +1,50 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "master", "main", "develop" ]
+  pull_request:
+    branches: [ "master", "main", "develop" ]
+
+jobs:
+  build:
+    name: Build Node Application
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js 14.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci || npm install
+      
+    - name: Build the project
+      run: npm run build
+
+  docker:
+    name: Docker Build Check
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build Docker image
+      run: docker build -t textile-backend:test .
+      
+    # Uncomment the below steps if you want to push this image to a registry like DockerHub or GHCR.
+    # - name: Log in to Docker Hub
+    #   uses: docker/login-action@v2
+    #   with:
+    #     username: ${{ secrets.DOCKER_USERNAME }}
+    #     password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    # - name: Push Docker image
+    #   run: |
+    #     docker tag textile-backend:test ${{ secrets.DOCKER_USERNAME }}/textile-backend:latest
+    #     docker push ${{ secrets.DOCKER_USERNAME }}/textile-backend:latest
