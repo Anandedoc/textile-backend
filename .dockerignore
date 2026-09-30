@@ -1,0 +1,12 @@
+Dockerfile
+docker-compose.yml
+docker-compose.dev.yml
+docker-compose.test.yml
+docker-compose.prod.yml
+.dockerignore
+.gitignore
+node_modules
+dists
+environments
+deploy.sh
+.env
